@@ -10,14 +10,27 @@ function App() {
 
   const searchLocation = (event) => {
     if (event.key === 'Enter') {
-      axios.get(url).then((response) => {
-        setData(response.data)
-        console.log(response.data)
-      })
-      setLocation('')
-    }
-  }
+      axios.get(url)
+        .then((response) => {
+          console.log(response.data);  // Log the response to inspect its structure
 
+          // Check if expected properties exist
+          if (response.data.name && response.data.main && response.data.weather) {
+            setData(response.data);
+          } else {
+            console.error('Unexpected response structure:', response.data);
+            // Optionally, you can set an error state or handle it accordingly
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+          // Optionally, you can set an error state or handle it accordingly
+        })
+        .finally(() => {
+          setLocation('');
+        });
+    }
+  };
   return (
     <div className="app">
       <div className="search">
@@ -54,6 +67,7 @@ function App() {
             <div className="wind">
               {data.wind ? <p className='bold'>{data.wind.speed.toFixed()} MPH</p> : null}
               <p>Wind Speed</p>
+              {console.log(data.wind)}
             </div>
           </div>
 
